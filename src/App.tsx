@@ -150,7 +150,7 @@ function App() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center space-x-3"
             >
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-400 rounded-lg flex items-center justify-center">
                 <Cpu className="w-6 h-6 text-white" />
               </div>
               <div className="text-2xl font-bold gradient-text">Symbiotik</div>
@@ -165,10 +165,10 @@ function App() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-'))}
-                  className="text-gray-300 hover:text-white font-medium transition-all hover:scale-105 relative group"
+                  className="text-gray-300 hover:text-white font-medium transition-colors relative group"
                 >
                   {item}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 group-hover:w-full transition-all"></span>
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500/70 group-hover:w-full transition-all"></span>
                 </motion.button>
               ))}
             </div>
@@ -217,66 +217,105 @@ function App() {
           <div className="absolute inset-0 hero-gradient" />
         </div>
 
-        <div className="relative container-max text-center">
+        <div className="relative container-max">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: 'easeOut' }}
-            className="max-w-5xl mx-auto"
+            className="max-w-6xl mx-auto"
           >
-            <motion.div
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 text-sm"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <Activity className="w-4 h-4 text-blue-300" />
-              <span className="text-slate-300">Embedded • IoT • Automation • Energy</span>
-            </motion.div>
+            <div className="grid lg:grid-cols-12 gap-10 items-center">
+              <div className="lg:col-span-7 text-center lg:text-left">
+                <motion.div
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 text-sm"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <Activity className="w-4 h-4 text-blue-300" />
+                  <span className="text-slate-300">Embedded • IoT • Automation • Energy</span>
+                </motion.div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 text-shadow">
-              Engineering <span className="gradient-text">Smart</span>{' '}
-              <br className="hidden lg:block" />
-              Connected Solutions
-            </h1>
+                <h1 className="text-5xl md:text-7xl font-bold mb-6 text-shadow">
+                  Engineering <span className="gradient-text">Smart</span> Connected Systems
+                </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.35 }}
-              className="text-lg md:text-xl text-slate-300 mb-10 max-w-4xl mx-auto leading-relaxed"
-            >
-              Delivering embedded systems, IoT, automation, and energy technologies for industries, innovators, and developers.
-            </motion.p>
+                <motion.p
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.35 }}
+                  className="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl leading-relaxed"
+                >
+                  We build reliable embedded hardware + software solutions—from rapid prototypes to production-grade deployments.
+                </motion.p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.45 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-            >
-              <button
-                onClick={() => scrollToSection('contact')}
-                className="btn-premium px-8 py-4 rounded-full text-white font-semibold text-base md:text-lg group"
-              >
-                <span className="relative z-10 flex items-center">
-                  Request Consultation
-                  <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </button>
-              <button
-                onClick={() => scrollToSection('projects')}
-                className="btn-outline px-8 py-4 rounded-full font-semibold text-base md:text-lg"
-              >
-                View Projects
-              </button>
-            </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.45 }}
+                  className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center"
+                >
+                  <button
+                    onClick={() => scrollToSection('contact')}
+                    className="btn-premium px-8 py-4 rounded-full text-white font-semibold text-base md:text-lg group"
+                  >
+                    <span className="relative z-10 flex items-center">
+                      Request Consultation
+                      <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('projects')}
+                    className="btn-outline px-8 py-4 rounded-full font-semibold text-base md:text-lg"
+                  >
+                    View Projects
+                  </button>
+                </motion.div>
+
+                <div className="mt-10">
+                  <div className="text-xs uppercase tracking-widest text-slate-500">Trusted by teams in</div>
+                  <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 justify-center lg:justify-start text-slate-300/80">
+                    <span className="font-medium">Manufacturing</span>
+                    <span className="font-medium">Energy</span>
+                    <span className="font-medium">Logistics</span>
+                    <span className="font-medium">Smart Buildings</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="lg:col-span-5">
+                <div className="card-premium rounded-3xl p-8">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <div className="text-sm text-slate-400">Delivery model</div>
+                      <div className="text-xl font-semibold text-white mt-1">From concept to production</div>
+                    </div>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+                      <Cpu className="h-6 w-6 text-blue-300" />
+                    </div>
+                  </div>
+
+                  <div className="mt-6 space-y-4">
+                    {[
+                      { title: 'Architecture', desc: 'Requirements → hardware/software architecture → risk review' },
+                      { title: 'Implementation', desc: 'Firmware, electronics, cloud integration, and tooling' },
+                      { title: 'Validation', desc: 'Testing, compliance support, manufacturing readiness' },
+                    ].map((row) => (
+                      <div key={row.title} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <div className="text-white font-medium">{row.title}</div>
+                        <div className="text-slate-300/80 text-sm mt-1 leading-relaxed">{row.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
             {/* Stats */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-16 md:mt-20 max-w-4xl mx-auto"
+              className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-12 max-w-6xl"
             >
               {[
                 { value: 500, suffix: '+', label: 'Projects Delivered', icon: Zap },
