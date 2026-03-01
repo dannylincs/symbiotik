@@ -5,8 +5,12 @@ import {
   Microchip, Wifi, Factory, Battery, 
   Code, Cloud, Mail, Phone, MapPin,
   Linkedin, Github, ArrowRight, Activity,
-  Globe, BarChart, Users, Award, ChevronRight
+  Globe, BarChart, Users, Award, ChevronRight, ChevronLeft
 } from 'lucide-react'
+
+import projectMonitoring from './assets/project-monitoring.svg'
+import projectEnergy from './assets/project-energy.svg'
+import projectDashboard from './assets/project-dashboard.svg'
 
 // Animated Counter Component
 function AnimatedCounter({
@@ -61,6 +65,149 @@ function AnimatedCounter({
         </div>
       </div>
     </motion.div>
+  )
+}
+
+function ProjectsCarousel({
+  items,
+}: {
+  items: Array<{
+    title: string
+    desc: string
+    tech: string[]
+    icon: React.ComponentType<{ className?: string }>
+    image: string
+  }>
+}) {
+  const scrollerRef = useRef<HTMLDivElement | null>(null)
+  const [active, setActive] = useState(0)
+
+  const scrollToIndex = (index: number) => {
+    const el = scrollerRef.current
+    if (!el) return
+    const next = Math.max(0, Math.min(items.length - 1, index))
+    el.scrollTo({ left: next * el.clientWidth, behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    const el = scrollerRef.current
+    if (!el) return
+
+    let raf = 0
+    const onScroll = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(() => {
+        const width = el.clientWidth || 1
+        const idx = Math.round(el.scrollLeft / width)
+        setActive(Math.max(0, Math.min(items.length - 1, idx)))
+      })
+    }
+
+    el.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+
+    const onResize = () => scrollToIndex(active)
+    window.addEventListener('resize', onResize)
+
+    return () => {
+      cancelAnimationFrame(raf)
+      el.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
+    }
+  }, [active, items.length])
+
+  const canPrev = active > 0
+  const canNext = active < items.length - 1
+
+  return (
+    <div>
+      <div className="flex items-center justify-end gap-2 mb-4">
+        <button
+          type="button"
+          onClick={() => scrollToIndex(active - 1)}
+          disabled={!canPrev}
+          className="h-10 w-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-white/80 hover:text-white hover:border-white/20 disabled:opacity-40 disabled:hover:border-white/10 transition"
+          aria-label="Previous project"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollToIndex(active + 1)}
+          disabled={!canNext}
+          className="h-10 w-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-white/80 hover:text-white hover:border-white/20 disabled:opacity-40 disabled:hover:border-white/10 transition"
+          aria-label="Next project"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
+      </div>
+
+      <div
+        ref={scrollerRef}
+        className="no-scrollbar overflow-x-auto scroll-smooth snap-x snap-mandatory rounded-3xl"
+      >
+        <div className="flex w-full">
+          {items.map((project, index) => (
+            <div
+              key={project.title}
+              className="w-full flex-none snap-start"
+              aria-label={`Project ${index + 1} of ${items.length}`}
+            >
+              <div className="card-premium rounded-3xl overflow-hidden">
+                <div className="h-52 border-b border-white/10 flex items-center justify-center relative overflow-hidden">
+                  <img
+                    src={project.image}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover opacity-90"
+                    draggable={false}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-slate-950/30 to-slate-950/70" />
+                  <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+                    <project.icon className="h-7 w-7 text-blue-300" />
+                  </div>
+                </div>
+                <div className="p-8">
+                  <h3 className="text-2xl font-semibold mb-3 text-white">{project.title}</h3>
+                  <p className="text-gray-300/80 mb-6 leading-relaxed max-w-3xl">{project.desc}</p>
+
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {project.tech.map((tech) => (
+                      <span
+                        key={tech}
+                        className="px-3 py-1 bg-white/5 text-slate-300 rounded-full text-sm border border-white/10"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  <button className="flex items-center text-blue-300 hover:text-blue-200 transition-colors group">
+                    View Case Study
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-5 flex items-center justify-center gap-2">
+        {items.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => scrollToIndex(i)}
+            className={
+              i === active
+                ? 'h-2.5 w-6 rounded-full bg-blue-400/80'
+                : 'h-2.5 w-2.5 rounded-full bg-white/20 hover:bg-white/30 transition'
+            }
+            aria-label={`Go to project ${i + 1}`}
+          />
+        ))}
+      </div>
+    </div>
   )
 }
 
@@ -553,60 +700,37 @@ function App() {
             </p>
           </motion.div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { 
-                title: 'Remote Monitoring System', 
-                desc: 'Real-time industrial equipment monitoring with predictive analytics and AI-powered insights',
-                tech: ['IoT', 'AI/ML', 'Cloud'],
-                icon: Zap,
-              },
-              { 
-                title: 'Smart Energy Controller', 
-                desc: 'AI-powered energy management system for commercial buildings with 40% efficiency improvement',
-                tech: ['Energy', 'AI', 'IoT'],
-                icon: Battery,
-              },
-              { 
-                title: 'Industrial IoT Dashboard', 
-                desc: 'Comprehensive data visualization platform for manufacturing with real-time analytics',
-                tech: ['Dashboard', 'Analytics', 'IoT'],
-                icon: BarChart,
-              }
-            ].map((project, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                className="card-premium rounded-3xl overflow-hidden group cursor-pointer"
-              >
-                <div className="h-44 bg-white/5 border-b border-white/10 flex items-center justify-center relative">
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/0 to-slate-950/40" />
-                  <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                    <project.icon className="h-7 w-7 text-blue-300" />
-                  </div>
-                </div>
-                <div className="p-8">
-                  <h3 className="text-xl font-semibold mb-4 group-hover:text-white transition-colors">{project.title}</h3>
-                  <p className="text-gray-400 mb-6 leading-relaxed">{project.desc}</p>
-                  
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {project.tech.map((tech, techIndex) => (
-                      <span key={techIndex} className="px-3 py-1 bg-white/5 text-slate-300 rounded-full text-sm border border-white/10">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                  
-                  <button className="flex items-center text-blue-300 hover:text-blue-200 transition-colors group">
-                    View Case Study 
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <ProjectsCarousel
+              items={[
+                {
+                  title: 'Remote Monitoring System',
+                  desc: 'Real-time industrial equipment monitoring with predictive analytics and AI-powered insights.',
+                  tech: ['IoT', 'AI/ML', 'Cloud'],
+                  icon: Zap,
+                  image: projectMonitoring,
+                },
+                {
+                  title: 'Smart Energy Controller',
+                  desc: 'AI-powered energy management for commercial buildings with significant efficiency improvements.',
+                  tech: ['Energy', 'AI', 'IoT'],
+                  icon: Battery,
+                  image: projectEnergy,
+                },
+                {
+                  title: 'Industrial IoT Dashboard',
+                  desc: 'Operations dashboard for manufacturing with real-time KPIs, alerts, and analytics.',
+                  tech: ['Dashboard', 'Analytics', 'IoT'],
+                  icon: BarChart,
+                  image: projectDashboard,
+                },
+              ]}
+            />
+          </motion.div>
         </div>
       </section>
 
