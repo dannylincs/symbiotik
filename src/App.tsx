@@ -5,7 +5,7 @@ import {
   Microchip, Wifi, Factory, Battery, 
   Code, Cloud, Mail, Phone, MapPin,
   Linkedin, Github, ArrowRight, Activity,
-  Globe, BarChart, Users, Award, ChevronRight, ChevronLeft, Settings, Radio
+  Globe, BarChart, Users, Award, ChevronRight, ChevronLeft
 } from 'lucide-react'
 
 import projectMonitoring from './assets/project-monitoring.svg'
