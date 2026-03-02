@@ -171,7 +171,12 @@ function ProjectsCarousel({
             >
               <div 
                 className="card-premium rounded-3xl overflow-hidden h-full cursor-pointer hover:scale-105 transition-transform"
-                onClick={() => index === active && setSelectedProject(index)}
+                onClick={() => {
+                  console.log('Card clicked:', index, 'active:', active);
+                  if (index === active) {
+                    setSelectedProject(index);
+                  }
+                }}
               >
                 <div className="h-48 border-b border-white/10 flex items-center justify-center relative overflow-hidden">
                   <img
