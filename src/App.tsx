@@ -855,91 +855,157 @@ function App() {
             </p>
           </motion.div>
           
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <ProjectsCarousel
-              items={[
-                {
-                  title: 'Remote Monitoring System',
-                  desc: 'Real-time IoT monitoring platform for industrial equipment with predictive analytics and alerting.',
-                  tech: ['React', 'Node.js', 'MQTT', 'PostgreSQL'],
-                  icon: Activity,
-                  image: projectMonitoring,
-                  features: [
-                    'Real-time monitoring of industrial equipment',
-                    'Predictive maintenance alerts',
-                    'Advanced analytics dashboard',
-                    'Mobile app integration',
-                    'Custom alert configurations'
-                  ],
-                  details: 'Our Remote Monitoring System provides comprehensive oversight of industrial operations through advanced IoT sensors and machine learning algorithms. The platform processes thousands of data points per second to identify potential issues before they become critical, reducing downtime by up to 40%.'
-                },
-                {
-                  title: 'Smart Energy Controller',
-                  desc: 'Automated energy management solution reducing consumption by 30% through AI-driven optimization.',
-                  tech: ['Python', 'TensorFlow', 'AWS IoT', 'TimescaleDB'],
-                  icon: Zap,
-                  image: projectEnergy,
-                  features: [
-                    'AI-powered energy optimization',
-                    'Real-time consumption tracking',
-                    'Automated load balancing',
-                    'Renewable energy integration',
-                    'Cost reduction analytics'
-                  ],
-                  details: 'The Smart Energy Controller leverages artificial intelligence to optimize energy consumption patterns across industrial facilities. By analyzing usage data and weather patterns, the system automatically adjusts energy distribution, resulting in significant cost savings and reduced environmental impact.'
-                },
-                {
-                  title: 'Industrial IoT Dashboard',
-                  desc: 'Comprehensive analytics dashboard for manufacturing plants with real-time KPI tracking.',
-                  tech: ['Vue.js', 'D3.js', 'InfluxDB', 'Docker'],
-                  icon: BarChart,
-                  image: projectDashboard,
-                  features: [
-                    'Real-time KPI monitoring',
-                    'Interactive data visualization',
-                    'Customizable dashboards',
-                    'Historical trend analysis',
-                    'Export and reporting tools'
-                  ],
-                  details: 'Our Industrial IoT Dashboard transforms complex manufacturing data into actionable insights through intuitive visualizations and real-time monitoring capabilities. Managers can track production efficiency, quality metrics, and operational performance from any device.'
-                },
-                {
-                  title: 'Predictive Maintenance Engine',
-                  desc: 'ML-powered system that forecasts equipment failures and schedules preventive maintenance.',
-                  tech: ['Python', 'Scikit-learn', 'Apache Kafka', 'MongoDB'],
-                  icon: Settings,
-                  image: projectMonitoring,
-                  features: [
-                    'Machine learning failure prediction',
-                    'Automated maintenance scheduling',
-                    'Equipment health scoring',
-                    'Integration with CMMS systems',
-                    'ROI tracking and analytics'
-                  ],
-                  details: 'The Predictive Maintenance Engine uses advanced machine learning algorithms to analyze equipment performance data and predict potential failures before they occur. This proactive approach reduces unplanned downtime and extends equipment lifespan.'
-                },
-                {
-                  title: 'Telemetry Gateway',
-                  desc: 'High-throughput data ingestion gateway processing millions of sensor messages daily.',
-                  tech: ['Go', 'Kafka', 'Redis', 'Kubernetes'],
-                  icon: Radio,
-                  image: projectEnergy,
-                  features: [
-                    'High-throughput data processing',
-                    'Protocol-agnostic ingestion',
-                    'Real-time data validation',
-                    'Scalable cloud deployment',
-                    'Built-in data security'
-                  ],
-                  details: 'Our Telemetry Gateway handles massive volumes of IoT data with enterprise-grade reliability and security. Built on modern cloud-native architecture, it processes millions of sensor messages daily while maintaining data integrity and low latency.'
-                },
-              ]}
-            />
-          </motion.div>
+          <div className="grid lg:grid-cols-3 gap-8 mt-16">
+            {/* Services Carousel */}
+            <div>
+              <ProjectsCarousel
+                items={[
+                  {
+                    title: 'IoT Solutions',
+                    desc: 'End-to-end IoT development from device to cloud.',
+                    tech: ['Embedded Systems', 'Cloud Architecture', 'Security'],
+                    icon: Cpu,
+                    image: projectMonitoring,
+                    features: [
+                      'Custom hardware design',
+                      'Firmware development',
+                      'Cloud integration',
+                      'Real-time analytics'
+                    ],
+                    details: 'Our IoT Solutions service delivers comprehensive connected device systems that bridge physical and digital worlds.'
+                  },
+                  {
+                    title: 'Web Applications',
+                    desc: 'Modern web applications with cutting-edge technologies.',
+                    tech: ['React', 'Node.js', 'TypeScript'],
+                    icon: Code,
+                    image: projectDashboard,
+                    features: [
+                      'Progressive Web Apps',
+                      'Real-time collaboration',
+                      'API development',
+                      'Cloud deployment'
+                    ],
+                    details: 'We create powerful web applications that deliver exceptional user experiences and robust functionality.'
+                  },
+                  {
+                    title: 'Cloud Infrastructure',
+                    desc: 'Scalable cloud solutions for performance and reliability.',
+                    tech: ['AWS', 'Azure', 'Kubernetes'],
+                    icon: Cloud,
+                    image: projectEnergy,
+                    features: [
+                      'Cloud migration',
+                      'Auto-scaling systems',
+                      'DevOps pipelines',
+                      'Security hardening'
+                    ],
+                    details: 'Our Cloud Infrastructure services help businesses leverage the power of cloud computing effectively.'
+                  }
+                ]}
+              />
+            </div>
+
+            {/* Technologies Carousel */}
+            <div>
+              <ProjectsCarousel
+                items={[
+                  {
+                    title: 'Frontend Technologies',
+                    desc: 'Modern frontend frameworks and libraries for exceptional UX.',
+                    tech: ['React', 'Vue.js', 'TypeScript', 'TailwindCSS'],
+                    icon: Code,
+                    image: projectDashboard,
+                    features: [
+                      'React & Next.js',
+                      'Vue.js & Nuxt.js',
+                      'TypeScript integration',
+                      'Responsive design'
+                    ],
+                    details: 'We leverage modern frontend technologies to create fast, responsive, and engaging user interfaces.'
+                  },
+                  {
+                    title: 'Backend Technologies',
+                    desc: 'Robust backend solutions for scalable applications.',
+                    tech: ['Node.js', 'Python', 'Go', 'PostgreSQL'],
+                    icon: Cpu,
+                    image: projectMonitoring,
+                    features: [
+                      'Node.js & Express',
+                      'Python & Django',
+                      'Go microservices',
+                      'Database design'
+                    ],
+                    details: 'Our backend expertise ensures high-performance, secure, and scalable server-side applications.'
+                  },
+                  {
+                    title: 'Cloud & DevOps',
+                    desc: 'Cloud-native solutions with modern DevOps practices.',
+                    tech: ['AWS', 'Docker', 'Kubernetes', 'CI/CD'],
+                    icon: Cloud,
+                    image: projectEnergy,
+                    features: [
+                      'AWS & Azure',
+                      'Container orchestration',
+                      'CI/CD pipelines',
+                      'Infrastructure as code'
+                    ],
+                    details: 'We implement cloud-native architectures and DevOps practices for reliable, scalable deployments.'
+                  }
+                ]}
+              />
+            </div>
+
+            {/* Industry Solutions Carousel */}
+            <div>
+              <ProjectsCarousel
+                items={[
+                  {
+                    title: 'Manufacturing',
+                    desc: 'IoT solutions for smart manufacturing and Industry 4.0.',
+                    tech: ['IIoT', 'Predictive Maintenance', 'Quality Control'],
+                    icon: Factory,
+                    image: projectMonitoring,
+                    features: [
+                      'Smart factories',
+                      'Predictive maintenance',
+                      'Quality automation',
+                      'Supply chain optimization'
+                    ],
+                    details: 'We transform manufacturing operations with IoT and AI for enhanced efficiency and quality.'
+                  },
+                  {
+                    title: 'Energy & Utilities',
+                    desc: 'Smart energy management and utility monitoring solutions.',
+                    tech: ['Smart Grid', 'Energy Analytics', 'Renewable Integration'],
+                    icon: Battery,
+                    image: projectEnergy,
+                    features: [
+                      'Smart grid management',
+                      'Energy optimization',
+                      'Renewable integration',
+                      'Demand response'
+                    ],
+                    details: 'Our energy solutions help utilities and consumers optimize energy usage and integrate renewable sources.'
+                  },
+                  {
+                    title: 'Healthcare',
+                    desc: 'Secure IoT solutions for healthcare and medical devices.',
+                    tech: ['Medical IoT', 'Patient Monitoring', 'Health Analytics'],
+                    icon: Shield,
+                    image: projectDashboard,
+                    features: [
+                      'Remote patient monitoring',
+                      'Medical device integration',
+                      'Health data analytics',
+                      'HIPAA compliance'
+                    ],
+                    details: 'We develop secure, compliant IoT solutions for healthcare that improve patient outcomes and operational efficiency.'
+                  }
+                ]}
+              />
+            </div>
+          </div>
         </div>
       </section>
 
