@@ -5,7 +5,7 @@ import {
   Microchip, Wifi, Factory, Battery, 
   Code, Cloud, Mail, Phone, MapPin,
   Linkedin, Github, ArrowRight, Activity,
-  Globe, BarChart, Users, Award, ChevronRight, ChevronLeft
+  Globe, BarChart, Users, Award, ChevronRight, ChevronLeft, Settings, Radio
 } from 'lucide-react'
 
 import projectMonitoring from './assets/project-monitoring.svg'
@@ -77,84 +77,103 @@ function ProjectsCarousel({
     tech: string[]
     icon: React.ComponentType<{ className?: string }>
     image: string
+    features: string[]
+    details: string
   }>
 }) {
-  const scrollerRef = useRef<HTMLDivElement | null>(null)
   const [active, setActive] = useState(0)
+  const [isAutoRotating, setIsAutoRotating] = useState(true)
+  const [selectedProject, setSelectedProject] = useState<number | null>(null)
 
-  const scrollToIndex = (index: number) => {
-    const el = scrollerRef.current
-    if (!el) return
-    const next = Math.max(0, Math.min(items.length - 1, index))
-    el.scrollTo({ left: next * el.clientWidth, behavior: 'smooth' })
+  const rotate = (direction: 'prev' | 'next') => {
+    setActive((prev) => {
+      if (direction === 'next') {
+        return (prev + 1) % items.length
+      } else {
+        return prev === 0 ? items.length - 1 : prev - 1
+      }
+    })
+    // Pause auto-rotation when user manually navigates
+    setIsAutoRotating(false)
+    setTimeout(() => setIsAutoRotating(true), 5000) // Resume after 5 seconds
   }
 
+  // Auto-rotation effect
   useEffect(() => {
-    const el = scrollerRef.current
-    if (!el) return
+    if (!isAutoRotating) return
 
-    let raf = 0
-    const onScroll = () => {
-      cancelAnimationFrame(raf)
-      raf = requestAnimationFrame(() => {
-        const width = el.clientWidth || 1
-        const idx = Math.round(el.scrollLeft / width)
-        setActive(Math.max(0, Math.min(items.length - 1, idx)))
-      })
+    const interval = setInterval(() => {
+      setActive((prev) => (prev + 1) % items.length)
+    }, 3000) // Rotate every 3 seconds
+
+    return () => clearInterval(interval)
+  }, [isAutoRotating, items.length])
+
+  const calculateTransform = (index: number) => {
+    const total = items.length
+    const diff = index - active
+    let normalized = diff
+    if (normalized > total / 2) normalized -= total
+    if (normalized < -total / 2) normalized += total
+
+    const angle = (360 / total) * normalized
+    const radius = 220
+    
+    if (index === active) {
+      return `translateZ(150px) scale(1.08)`
     }
-
-    el.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-
-    const onResize = () => scrollToIndex(active)
-    window.addEventListener('resize', onResize)
-
-    return () => {
-      cancelAnimationFrame(raf)
-      el.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onResize)
-    }
-  }, [active, items.length])
-
-  const canPrev = active > 0
-  const canNext = active < items.length - 1
+    
+    return `rotateY(${angle}deg) translateZ(${radius}px)`
+  }
 
   return (
     <div>
       <div className="flex items-center justify-end gap-2 mb-4">
         <button
           type="button"
-          onClick={() => scrollToIndex(active - 1)}
-          disabled={!canPrev}
-          className="h-10 w-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-white/80 hover:text-white hover:border-white/20 disabled:opacity-40 disabled:hover:border-white/10 transition"
+          onClick={() => rotate('prev')}
+          className="h-10 w-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-white/80 hover:text-white hover:border-white/20 transition"
           aria-label="Previous project"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
         <button
           type="button"
-          onClick={() => scrollToIndex(active + 1)}
-          disabled={!canNext}
-          className="h-10 w-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-white/80 hover:text-white hover:border-white/20 disabled:opacity-40 disabled:hover:border-white/10 transition"
+          onClick={() => rotate('next')}
+          className="h-10 w-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-white/80 hover:text-white hover:border-white/20 transition"
           aria-label="Next project"
         >
           <ChevronRight className="h-5 w-5" />
         </button>
       </div>
 
-      <div
-        ref={scrollerRef}
-        className="no-scrollbar overflow-x-auto scroll-smooth snap-x snap-mandatory rounded-3xl"
+      <div 
+        className="carousel-ring"
+        onMouseEnter={() => setIsAutoRotating(false)}
+        onMouseLeave={() => setIsAutoRotating(true)}
       >
-        <div className="flex w-full">
+        <div
+          className="carousel-ring-stage"
+          style={{
+            transform: `rotateY(${-active * (360 / items.length)}deg)`,
+          }}
+        >
           {items.map((project, index) => (
             <div
               key={project.title}
-              className="w-full flex-none snap-start"
+              className={`carousel-ring-item ${index === active ? 'active' : ''}`}
+              style={{
+                transform: calculateTransform(index),
+                opacity: index === active ? 1 : Math.max(0.3, 1 - Math.abs((index - active + items.length) % items.length - items.length/2) * 0.3),
+                pointerEvents: index === active ? 'auto' : 'none'
+              }}
               aria-label={`Project ${index + 1} of ${items.length}`}
             >
-              <div className="card-premium rounded-3xl overflow-hidden">
-                <div className="h-52 border-b border-white/10 flex items-center justify-center relative overflow-hidden">
+              <div 
+                className="card-premium rounded-3xl overflow-hidden h-full cursor-pointer hover:scale-105 transition-transform"
+                onClick={() => index === active && setSelectedProject(index)}
+              >
+                <div className="h-48 border-b border-white/10 flex items-center justify-center relative overflow-hidden">
                   <img
                     src={project.image}
                     alt=""
@@ -162,28 +181,28 @@ function ProjectsCarousel({
                     draggable={false}
                   />
                   <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-slate-950/30 to-slate-950/70" />
-                  <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                    <project.icon className="h-7 w-7 text-blue-300" />
+                  <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+                    <project.icon className="h-6 w-6 text-blue-300" />
                   </div>
                 </div>
-                <div className="p-8">
-                  <h3 className="text-2xl font-semibold mb-3 text-white">{project.title}</h3>
-                  <p className="text-gray-300/80 mb-6 leading-relaxed max-w-3xl">{project.desc}</p>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2 text-white">{project.title}</h3>
+                  <p className="text-gray-300/80 mb-4 text-sm leading-relaxed">{project.desc}</p>
 
-                  <div className="flex flex-wrap gap-2 mb-6">
+                  <div className="flex flex-wrap gap-1.5 mb-4">
                     {project.tech.map((tech) => (
                       <span
                         key={tech}
-                        className="px-3 py-1 bg-white/5 text-slate-300 rounded-full text-sm border border-white/10"
+                        className="px-2 py-1 bg-white/5 text-slate-300 rounded-full text-xs border border-white/10"
                       >
                         {tech}
                       </span>
                     ))}
                   </div>
 
-                  <button className="flex items-center text-blue-300 hover:text-blue-200 transition-colors group">
+                  <button className="flex items-center text-blue-300 hover:text-blue-200 transition-colors group text-sm">
                     View Case Study
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-3.5 h-3.5 ml-1.5 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
@@ -197,7 +216,11 @@ function ProjectsCarousel({
           <button
             key={i}
             type="button"
-            onClick={() => scrollToIndex(i)}
+            onClick={() => {
+              setActive(i)
+              setIsAutoRotating(false)
+              setTimeout(() => setIsAutoRotating(true), 5000) // Resume after 5 seconds
+            }}
             className={
               i === active
                 ? 'h-2.5 w-6 rounded-full bg-blue-400/80'
@@ -207,6 +230,99 @@ function ProjectsCarousel({
           />
         ))}
       </div>
+
+      {/* Project Detail Modal */}
+      {selectedProject !== null && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedProject(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            className="bg-slate-900 border border-white/10 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {items[selectedProject] && (
+              <div className="relative">
+                <div className="h-64 border-b border-white/10 relative overflow-hidden">
+                  <img
+                    src={items[selectedProject].image}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover opacity-90"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-slate-950/50 to-slate-950/90" />
+                  <div className="p-8">
+                  {(() => {
+                    const Icon = items[selectedProject].icon
+                    return (
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                          <Icon className="h-8 w-8 text-blue-300" />
+                        </div>
+                        <div>
+                          <h2 className="text-3xl font-bold text-white">{items[selectedProject].title}</h2>
+                          <p className="text-gray-300">{items[selectedProject].desc}</p>
+                        </div>
+                      </div>
+                    )
+                  })()}
+                </div>
+                </div>
+                
+                <div className="p-8">
+                  <div className="mb-8">
+                    <h3 className="text-xl font-semibold mb-4 text-white">Project Overview</h3>
+                    <p className="text-gray-300 leading-relaxed">{items[selectedProject].details}</p>
+                  </div>
+
+                  <div className="mb-8">
+                    <h3 className="text-xl font-semibold mb-4 text-white">Key Features</h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {items[selectedProject].features.map((feature, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                          <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
+                          <span className="text-gray-300">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mb-8">
+                    <h3 className="text-xl font-semibold mb-4 text-white">Technologies Used</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {items[selectedProject].tech.map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-4 py-2 bg-blue-500/20 text-blue-300 rounded-full text-sm border border-blue-500/30"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <button className="px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors">
+                      Get Started
+                    </button>
+                    <button 
+                      className="px-6 py-3 border border-white/20 text-white rounded-xl hover:bg-white/10 transition-colors"
+                      onClick={() => setSelectedProject(null)}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
     </div>
   )
 }
@@ -709,24 +825,78 @@ function App() {
               items={[
                 {
                   title: 'Remote Monitoring System',
-                  desc: 'Real-time industrial equipment monitoring with predictive analytics and AI-powered insights.',
-                  tech: ['IoT', 'AI/ML', 'Cloud'],
-                  icon: Zap,
+                  desc: 'Real-time IoT monitoring platform for industrial equipment with predictive analytics and alerting.',
+                  tech: ['React', 'Node.js', 'MQTT', 'PostgreSQL'],
+                  icon: Activity,
                   image: projectMonitoring,
+                  features: [
+                    'Real-time monitoring of industrial equipment',
+                    'Predictive maintenance alerts',
+                    'Advanced analytics dashboard',
+                    'Mobile app integration',
+                    'Custom alert configurations'
+                  ],
+                  details: 'Our Remote Monitoring System provides comprehensive oversight of industrial operations through advanced IoT sensors and machine learning algorithms. The platform processes thousands of data points per second to identify potential issues before they become critical, reducing downtime by up to 40%.'
                 },
                 {
                   title: 'Smart Energy Controller',
-                  desc: 'AI-powered energy management for commercial buildings with significant efficiency improvements.',
-                  tech: ['Energy', 'AI', 'IoT'],
-                  icon: Battery,
+                  desc: 'Automated energy management solution reducing consumption by 30% through AI-driven optimization.',
+                  tech: ['Python', 'TensorFlow', 'AWS IoT', 'TimescaleDB'],
+                  icon: Zap,
                   image: projectEnergy,
+                  features: [
+                    'AI-powered energy optimization',
+                    'Real-time consumption tracking',
+                    'Automated load balancing',
+                    'Renewable energy integration',
+                    'Cost reduction analytics'
+                  ],
+                  details: 'The Smart Energy Controller leverages artificial intelligence to optimize energy consumption patterns across industrial facilities. By analyzing usage data and weather patterns, the system automatically adjusts energy distribution, resulting in significant cost savings and reduced environmental impact.'
                 },
                 {
                   title: 'Industrial IoT Dashboard',
-                  desc: 'Operations dashboard for manufacturing with real-time KPIs, alerts, and analytics.',
-                  tech: ['Dashboard', 'Analytics', 'IoT'],
+                  desc: 'Comprehensive analytics dashboard for manufacturing plants with real-time KPI tracking.',
+                  tech: ['Vue.js', 'D3.js', 'InfluxDB', 'Docker'],
                   icon: BarChart,
                   image: projectDashboard,
+                  features: [
+                    'Real-time KPI monitoring',
+                    'Interactive data visualization',
+                    'Customizable dashboards',
+                    'Historical trend analysis',
+                    'Export and reporting tools'
+                  ],
+                  details: 'Our Industrial IoT Dashboard transforms complex manufacturing data into actionable insights through intuitive visualizations and real-time monitoring capabilities. Managers can track production efficiency, quality metrics, and operational performance from any device.'
+                },
+                {
+                  title: 'Predictive Maintenance Engine',
+                  desc: 'ML-powered system that forecasts equipment failures and schedules preventive maintenance.',
+                  tech: ['Python', 'Scikit-learn', 'Apache Kafka', 'MongoDB'],
+                  icon: Settings,
+                  image: projectMonitoring,
+                  features: [
+                    'Machine learning failure prediction',
+                    'Automated maintenance scheduling',
+                    'Equipment health scoring',
+                    'Integration with CMMS systems',
+                    'ROI tracking and analytics'
+                  ],
+                  details: 'The Predictive Maintenance Engine uses advanced machine learning algorithms to analyze equipment performance data and predict potential failures before they occur. This proactive approach reduces unplanned downtime and extends equipment lifespan.'
+                },
+                {
+                  title: 'Telemetry Gateway',
+                  desc: 'High-throughput data ingestion gateway processing millions of sensor messages daily.',
+                  tech: ['Go', 'Kafka', 'Redis', 'Kubernetes'],
+                  icon: Radio,
+                  image: projectEnergy,
+                  features: [
+                    'High-throughput data processing',
+                    'Protocol-agnostic ingestion',
+                    'Real-time data validation',
+                    'Scalable cloud deployment',
+                    'Built-in data security'
+                  ],
+                  details: 'Our Telemetry Gateway handles massive volumes of IoT data with enterprise-grade reliability and security. Built on modern cloud-native architecture, it processes millions of sensor messages daily while maintaining data integrity and low latency.'
                 },
               ]}
             />
@@ -774,8 +944,8 @@ function App() {
                   <div className="space-y-6 mb-8">
                     {[
                       { icon: Mail, text: 'info@symbiotik.com', label: 'Email' },
-                      { icon: Phone, text: '+1 (555) 123-4567', label: 'Phone' },
-                      { icon: MapPin, text: 'San Francisco, CA', label: 'Location' }
+                      { icon: Phone, text: '+2348169347203', label: 'Phone' },
+                      { icon: MapPin, text: 'Kuje FCT', label: 'Location' }
                     ].map((item, index) => (
                       <motion.div
                         key={index}
