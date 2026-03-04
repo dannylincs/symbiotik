@@ -329,6 +329,20 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Horizontal Scroll Carousel */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
 .marquee {
   position: relative;
   overflow: hidden;

@@ -8,9 +8,24 @@ import {
   Globe, BarChart, Users, Award, ChevronRight, ChevronLeft
 } from 'lucide-react'
 
+// TikTok and Instagram icons (custom SVG components)
+const TikTokIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.25 1.12 1.16 2.67 1.79 4.25 1.94v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.89.01 5.77-.02 8.66-.03 1.68-.63 3.34-1.69 4.62-1.51 1.85-3.96 2.71-6.31 2.29-2.34-.41-4.39-2.03-5.31-4.22-.32-.78-.49-1.63-.49-2.48.01-1.7.01-3.39-.01-5.08 1.36.01 2.72-.02 4.08.01 1.03.03 2.05.44 2.68 1.26.83 1.04.96 2.58.33 3.78-.3.59-.78 1.05-1.31 1.37.01.79.02 1.57-.01 2.35-.05.96-.49 1.89-1.25 2.44-.76.55-1.78.71-2.71.47-.92-.24-1.73-.87-2.19-1.73-.46-.86-.53-1.92-.19-2.83.34-.91.98-1.62 1.84-2.05.86-.43 1.87-.51 2.79-.24.01-2.21-.01-4.42.02-6.63.03-1.18.56-2.34 1.44-3.06.89-.72 2.1-.98 3.23-.72.01.8.01 1.59-.01 2.38-.67-.13-1.43.02-1.88.57-.45.55-.52 1.35-.18 1.98.34.63.98.97 1.63.91.65-.06 1.23-.51 1.47-1.12.24-.61.15-1.35-.23-1.89-.38-.54-1.01-.84-1.63-.79-.01.79-.01 1.57.01 2.35-.05.96-.49 1.89-1.25 2.44-.76.55-1.78.71-2.71.47-.92-.24-1.73-.87-2.19-1.73-.46-.86-.53-1.92-.19-2.83.34-.91.98-1.62 1.84-2.05.86-.43 1.87-.51 2.79-.24.01-2.21-.01-4.42.02-6.63.03-1.18.56-2.34 1.44-3.06.89-.72 2.1-.98 3.23-.72z"/>
+  </svg>
+)
+
+const InstagramIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1 1 12.324 0 6.162 6.162 0 0 1-12.324 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4.965-10.405a1.44 1.44 0 1 1 2.881.001 1.44 1.44 0 0 1-2.881-.001z"/>
+  </svg>
+)
+
 import projectMonitoring from './assets/project-monitoring.svg'
 import projectEnergy from './assets/project-energy.svg'
 import projectDashboard from './assets/project-dashboard.svg'
+import deliveryModel from './assets/project3.jpeg'
+import logo from './assets/logo.png'
 
 // Animated Counter Component
 function AnimatedCounter({
@@ -82,48 +97,43 @@ function ProjectsCarousel({
   }>
 }) {
   const [active, setActive] = useState(0)
-  const [isAutoRotating, setIsAutoRotating] = useState(true)
   const [selectedProject, setSelectedProject] = useState<number | null>(null)
 
-  const rotate = (direction: 'prev' | 'next') => {
-    setActive((prev) => {
-      if (direction === 'next') {
-        return (prev + 1) % items.length
-      } else {
-        return prev === 0 ? items.length - 1 : prev - 1
-      }
-    })
-    // Pause auto-rotation when user manually navigates
-    setIsAutoRotating(false)
-    setTimeout(() => setIsAutoRotating(true), 5000) // Resume after 5 seconds
+  const scrollContainer = useRef<HTMLDivElement>(null)
+
+  const scrollToItem = (index: number) => {
+    if (scrollContainer.current) {
+      const containerWidth = scrollContainer.current.clientWidth
+      const itemWidth = containerWidth / 3 // Show 3 items at once
+      const gap = 16 // gap between items
+      const scrollPosition = index * (itemWidth + gap)
+      scrollContainer.current.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth'
+      })
+      setActive(index)
+    }
   }
 
-  // Auto-rotation effect
-  useEffect(() => {
-    if (!isAutoRotating) return
-
-    const interval = setInterval(() => {
-      setActive((prev) => (prev + 1) % items.length)
-    }, 3000) // Rotate every 3 seconds
-
-    return () => clearInterval(interval)
-  }, [isAutoRotating, items.length])
-
-  const calculateTransform = (index: number) => {
-    const total = items.length
-    const diff = index - active
-    let normalized = diff
-    if (normalized > total / 2) normalized -= total
-    if (normalized < -total / 2) normalized += total
-
-    const angle = (360 / total) * normalized
-    const radius = 220
-    
-    if (index === active) {
-      return `translateZ(150px) scale(1.08)`
+  const handleScroll = () => {
+    if (scrollContainer.current) {
+      const scrollLeft = scrollContainer.current.scrollLeft
+      const containerWidth = scrollContainer.current.clientWidth
+      const itemWidth = containerWidth / 3
+      const gap = 16
+      const newIndex = Math.round(scrollLeft / (itemWidth + gap))
+      setActive(Math.min(Math.max(newIndex, 0), items.length - 1))
     }
-    
-    return `rotateY(${angle}deg) translateZ(${radius}px)`
+  }
+
+  const nextItem = () => {
+    const nextIndex = (active + 1) % items.length
+    scrollToItem(nextIndex)
+  }
+
+  const prevItem = () => {
+    const prevIndex = active === 0 ? items.length - 1 : active - 1
+    scrollToItem(prevIndex)
   }
 
   return (
@@ -131,7 +141,7 @@ function ProjectsCarousel({
       <div className="flex items-center justify-end gap-2 mb-4">
         <button
           type="button"
-          onClick={() => rotate('prev')}
+          onClick={prevItem}
           className="h-10 w-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-white/80 hover:text-white hover:border-white/20 transition"
           aria-label="Previous project"
         >
@@ -139,7 +149,7 @@ function ProjectsCarousel({
         </button>
         <button
           type="button"
-          onClick={() => rotate('next')}
+          onClick={nextItem}
           className="h-10 w-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-white/80 hover:text-white hover:border-white/20 transition"
           aria-label="Next project"
         >
@@ -147,36 +157,21 @@ function ProjectsCarousel({
         </button>
       </div>
 
-      <div 
-        className="carousel-ring"
-        onMouseEnter={() => setIsAutoRotating(false)}
-        onMouseLeave={() => setIsAutoRotating(true)}
-      >
+      <div className="relative">
         <div
-          className="carousel-ring-stage"
-          style={{
-            transform: `rotateY(${-active * (360 / items.length)}deg)`,
-          }}
+          ref={scrollContainer}
+          className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth py-2"
+          onScroll={handleScroll}
         >
           {items.map((project, index) => (
             <div
               key={project.title}
-              className={`carousel-ring-item ${index === active ? 'active' : ''}`}
-              style={{
-                transform: calculateTransform(index),
-                opacity: index === active ? 1 : Math.max(0.3, 1 - Math.abs((index - active + items.length) % items.length - items.length/2) * 0.3),
-                pointerEvents: index === active ? 'auto' : 'none'
-              }}
-              aria-label={`Project ${index + 1} of ${items.length}`}
+              className="flex-shrink-0"
+              style={{ width: 'calc(33.333% - 11px)' }} // 3 items per row with gap
             >
               <div 
                 className="card-premium rounded-3xl overflow-hidden h-full cursor-pointer hover:scale-105 transition-transform"
-                onClick={() => {
-                  console.log('Card clicked:', index, 'active:', active);
-                  if (index === active) {
-                    setSelectedProject(index);
-                  }
-                }}
+                onClick={() => index === active && setSelectedProject(index)}
               >
                 <div className="h-48 border-b border-white/10 flex items-center justify-center relative overflow-hidden">
                   <img
@@ -221,11 +216,7 @@ function ProjectsCarousel({
           <button
             key={i}
             type="button"
-            onClick={() => {
-              setActive(i)
-              setIsAutoRotating(false)
-              setTimeout(() => setIsAutoRotating(true), 5000) // Resume after 5 seconds
-            }}
+            onClick={() => scrollToItem(i)}
             className={
               i === active
                 ? 'h-2.5 w-6 rounded-full bg-blue-400/80'
@@ -455,12 +446,11 @@ function App() {
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center space-x-3"
+              className="flex items-center"
             >
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-400 rounded-lg flex items-center justify-center">
-                <Cpu className="w-6 h-6 text-white" />
+              <div className="w-14 h-14 flex items-center justify-center">
+                <img src={logo} alt="Symbiotik Logo" className="w-full h-full object-contain filter drop-shadow-2xl brightness-110 contrast-125" />
               </div>
-              <div className="text-2xl font-bold gradient-text">Symbiotik</div>
             </motion.div>
             
             {/* Desktop Menu */}
@@ -514,7 +504,7 @@ function App() {
       </nav>
 
       {/* Hero Section */}
-      <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden tech-grid">
+      <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden tech-grid bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900">
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1526378722484-bd91ca387e72?auto=format&fit=crop&w=2400&q=80"
@@ -544,7 +534,7 @@ function App() {
                 </motion.div>
 
                 <h1 className="text-5xl md:text-7xl font-bold mb-6 text-shadow">
-                  Engineering <span className="gradient-text">Smart</span> Connected Systems
+                  Engineering <span className="text-white">Smart</span> Connected Systems
                 </h1>
 
                 <motion.p
@@ -580,39 +570,21 @@ function App() {
                 </motion.div>
 
                 <div className="mt-10">
-                  <div className="text-xs uppercase tracking-widest text-slate-500">Trusted by teams in</div>
                   <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 justify-center lg:justify-start text-slate-300/80">
-                    <span className="font-medium">Manufacturing</span>
-                    <span className="font-medium">Energy</span>
-                    <span className="font-medium">Logistics</span>
-                    <span className="font-medium">Smart Buildings</span>
                   </div>
                 </div>
               </div>
 
               <div className="lg:col-span-5">
-                <div className="card-premium rounded-3xl p-8">
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <div className="text-sm text-slate-400">Delivery model</div>
-                      <div className="text-xl font-semibold text-white mt-1">From concept to production</div>
-                    </div>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                      <Cpu className="h-6 w-6 text-blue-300" />
-                    </div>
-                  </div>
-
-                  <div className="mt-6 space-y-4">
-                    {[
-                      { title: 'Architecture', desc: 'Requirements → hardware/software architecture → risk review' },
-                      { title: 'Implementation', desc: 'Firmware, electronics, cloud integration, and tooling' },
-                      { title: 'Validation', desc: 'Testing, compliance support, manufacturing readiness' },
-                    ].map((row) => (
-                      <div key={row.title} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        <div className="text-white font-medium">{row.title}</div>
-                        <div className="text-slate-300/80 text-sm mt-1 leading-relaxed">{row.desc}</div>
-                      </div>
-                    ))}
+                <div className="card-premium rounded-3xl overflow-hidden relative h-full min-h-[500px]">
+                  <img 
+                    src={deliveryModel} 
+                    alt="Delivery Model" 
+                    className="w-full h-full object-cover object-center"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
+                    <div className="text-sm text-white mb-2 font-medium">Delivery model</div>
+                    <div className="text-lg font-semibold text-white">From concept to production</div>
                   </div>
                 </div>
               </div>
@@ -643,7 +615,7 @@ function App() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="section-padding relative">
+      <section id="about" className="section-padding relative bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900">
         <div className="container-max">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -736,7 +708,7 @@ function App() {
       </section>
 
       {/* Why Us Section */}
-      <section id="why-us" className="section-padding bg-gradient-to-b from-transparent to-slate-900/50">
+      <section id="why-us" className="section-padding bg-gradient-to-br from-slate-900 via-green-900/20 to-slate-900">
         <div className="container-max">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -783,7 +755,7 @@ function App() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="section-padding">
+      <section id="services" className="section-padding bg-gradient-to-br from-slate-900 via-orange-900/20 to-slate-900">
         <div className="container-max">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -834,7 +806,7 @@ function App() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="section-padding bg-gradient-to-b from-transparent to-slate-900/50">
+      <section id="projects" className="section-padding bg-gradient-to-br from-slate-900 via-cyan-900/20 to-slate-900">
         <div className="container-max">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -860,162 +832,88 @@ function App() {
             </p>
           </motion.div>
           
-          <div className="grid lg:grid-cols-3 gap-8 mt-16">
-            {/* Services Carousel */}
-            <div>
-              <ProjectsCarousel
-                items={[
-                  {
-                    title: 'IoT Solutions',
-                    desc: 'End-to-end IoT development from device to cloud.',
-                    tech: ['Embedded Systems', 'Cloud Architecture', 'Security'],
-                    icon: Cpu,
-                    image: projectMonitoring,
-                    features: [
-                      'Custom hardware design',
-                      'Firmware development',
-                      'Cloud integration',
-                      'Real-time analytics'
-                    ],
-                    details: 'Our IoT Solutions service delivers comprehensive connected device systems that bridge physical and digital worlds.'
-                  },
-                  {
-                    title: 'Web Applications',
-                    desc: 'Modern web applications with cutting-edge technologies.',
-                    tech: ['React', 'Node.js', 'TypeScript'],
-                    icon: Code,
-                    image: projectDashboard,
-                    features: [
-                      'Progressive Web Apps',
-                      'Real-time collaboration',
-                      'API development',
-                      'Cloud deployment'
-                    ],
-                    details: 'We create powerful web applications that deliver exceptional user experiences and robust functionality.'
-                  },
-                  {
-                    title: 'Cloud Infrastructure',
-                    desc: 'Scalable cloud solutions for performance and reliability.',
-                    tech: ['AWS', 'Azure', 'Kubernetes'],
-                    icon: Cloud,
-                    image: projectEnergy,
-                    features: [
-                      'Cloud migration',
-                      'Auto-scaling systems',
-                      'DevOps pipelines',
-                      'Security hardening'
-                    ],
-                    details: 'Our Cloud Infrastructure services help businesses leverage the power of cloud computing effectively.'
-                  }
-                ]}
-              />
-            </div>
-
-            {/* Technologies Carousel */}
-            <div>
-              <ProjectsCarousel
-                items={[
-                  {
-                    title: 'Frontend Technologies',
-                    desc: 'Modern frontend frameworks and libraries for exceptional UX.',
-                    tech: ['React', 'Vue.js', 'TypeScript', 'TailwindCSS'],
-                    icon: Code,
-                    image: projectDashboard,
-                    features: [
-                      'React & Next.js',
-                      'Vue.js & Nuxt.js',
-                      'TypeScript integration',
-                      'Responsive design'
-                    ],
-                    details: 'We leverage modern frontend technologies to create fast, responsive, and engaging user interfaces.'
-                  },
-                  {
-                    title: 'Backend Technologies',
-                    desc: 'Robust backend solutions for scalable applications.',
-                    tech: ['Node.js', 'Python', 'Go', 'PostgreSQL'],
-                    icon: Cpu,
-                    image: projectMonitoring,
-                    features: [
-                      'Node.js & Express',
-                      'Python & Django',
-                      'Go microservices',
-                      'Database design'
-                    ],
-                    details: 'Our backend expertise ensures high-performance, secure, and scalable server-side applications.'
-                  },
-                  {
-                    title: 'Cloud & DevOps',
-                    desc: 'Cloud-native solutions with modern DevOps practices.',
-                    tech: ['AWS', 'Docker', 'Kubernetes', 'CI/CD'],
-                    icon: Cloud,
-                    image: projectEnergy,
-                    features: [
-                      'AWS & Azure',
-                      'Container orchestration',
-                      'CI/CD pipelines',
-                      'Infrastructure as code'
-                    ],
-                    details: 'We implement cloud-native architectures and DevOps practices for reliable, scalable deployments.'
-                  }
-                ]}
-              />
-            </div>
-
-            {/* Industry Solutions Carousel */}
-            <div>
-              <ProjectsCarousel
-                items={[
-                  {
-                    title: 'Manufacturing',
-                    desc: 'IoT solutions for smart manufacturing and Industry 4.0.',
-                    tech: ['IIoT', 'Predictive Maintenance', 'Quality Control'],
-                    icon: Factory,
-                    image: projectMonitoring,
-                    features: [
-                      'Smart factories',
-                      'Predictive maintenance',
-                      'Quality automation',
-                      'Supply chain optimization'
-                    ],
-                    details: 'We transform manufacturing operations with IoT and AI for enhanced efficiency and quality.'
-                  },
-                  {
-                    title: 'Energy & Utilities',
-                    desc: 'Smart energy management and utility monitoring solutions.',
-                    tech: ['Smart Grid', 'Energy Analytics', 'Renewable Integration'],
-                    icon: Battery,
-                    image: projectEnergy,
-                    features: [
-                      'Smart grid management',
-                      'Energy optimization',
-                      'Renewable integration',
-                      'Demand response'
-                    ],
-                    details: 'Our energy solutions help utilities and consumers optimize energy usage and integrate renewable sources.'
-                  },
-                  {
-                    title: 'Healthcare',
-                    desc: 'Secure IoT solutions for healthcare and medical devices.',
-                    tech: ['Medical IoT', 'Patient Monitoring', 'Health Analytics'],
-                    icon: Shield,
-                    image: projectDashboard,
-                    features: [
-                      'Remote patient monitoring',
-                      'Medical device integration',
-                      'Health data analytics',
-                      'HIPAA compliance'
-                    ],
-                    details: 'We develop secure, compliant IoT solutions for healthcare that improve patient outcomes and operational efficiency.'
-                  }
-                ]}
-              />
-            </div>
+          <div className="max-w-4xl mx-auto mt-16">
+            {/* Single Projects Carousel with 3 Projects */}
+            <ProjectsCarousel
+              items={[
+                {
+                  title: 'IoT Solutions',
+                  desc: 'End-to-end IoT development from device to cloud.',
+                  tech: ['Embedded Systems', 'Cloud Architecture', 'Security'],
+                  icon: Cpu,
+                  image: projectMonitoring,
+                  features: [
+                    'Custom hardware design',
+                    'Firmware development',
+                    'Cloud integration',
+                    'Real-time analytics'
+                  ],
+                  details: 'Our IoT Solutions service delivers comprehensive connected device systems that bridge physical and digital worlds.'
+                },
+                {
+                  title: 'Web Applications',
+                  desc: 'Modern web applications with cutting-edge technologies.',
+                  tech: ['React', 'Node.js', 'TypeScript'],
+                  icon: Code,
+                  image: projectDashboard,
+                  features: [
+                    'Progressive Web Apps',
+                    'Real-time collaboration',
+                    'API development',
+                    'Cloud deployment'
+                  ],
+                  details: 'We create powerful web applications that deliver exceptional user experiences and robust functionality.'
+                },
+                {
+                  title: 'Cloud Infrastructure',
+                  desc: 'Scalable cloud solutions for performance and reliability.',
+                  tech: ['AWS', 'Azure', 'Kubernetes'],
+                  icon: Cloud,
+                  image: projectEnergy,
+                  features: [
+                    'Cloud migration',
+                    'Auto-scaling systems',
+                    'DevOps pipelines',
+                    'Security hardening'
+                  ],
+                  details: 'Our Cloud Infrastructure services help businesses leverage the power of cloud computing effectively.'
+                },
+                {
+                  title: 'Manufacturing Solutions',
+                  desc: 'IoT solutions for smart manufacturing and Industry 4.0.',
+                  tech: ['IIoT', 'Predictive Maintenance', 'Quality Control'],
+                  icon: Factory,
+                  image: projectMonitoring,
+                  features: [
+                    'Smart factories',
+                    'Predictive maintenance',
+                    'Quality automation',
+                    'Supply chain optimization'
+                  ],
+                  details: 'We transform manufacturing operations with IoT and AI for enhanced efficiency and quality.'
+                },
+                {
+                  title: 'Energy Management',
+                  desc: 'Smart energy management and utility monitoring solutions.',
+                  tech: ['Smart Grid', 'Energy Analytics', 'Renewable Integration'],
+                  icon: Battery,
+                  image: projectEnergy,
+                  features: [
+                    'Smart grid management',
+                    'Energy optimization',
+                    'Renewable integration',
+                    'Demand response'
+                  ],
+                  details: 'Our energy solutions help utilities and consumers optimize energy usage and integrate renewable sources.'
+                }
+              ]}
+            />
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="section-padding relative">
+      <section id="contact" className="section-padding relative bg-gradient-to-br from-slate-900 via-indigo-900/20 to-slate-900">
         <div className="container-max">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1078,7 +976,8 @@ function App() {
                   <div className="flex space-x-4">
                     {[
                       { icon: Linkedin, label: 'LinkedIn' },
-                      { icon: Github, label: 'GitHub' }
+                      { icon: TikTokIcon, label: 'TikTok' },
+                      { icon: InstagramIcon, label: 'Instagram' }
                     ].map((social, index) => (
                       <motion.button
                         key={index}
@@ -1160,11 +1059,10 @@ function App() {
         <div className="relative container-max py-12">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Cpu className="w-6 h-6 text-white" />
+              <div className="flex items-center mb-4">
+                <div className="w-14 h-14 flex items-center justify-center">
+                  <img src={logo} alt="Symbiotik Logo" className="w-full h-full object-contain filter drop-shadow-2xl brightness-110 contrast-125" />
                 </div>
-                <div className="text-2xl font-bold gradient-text">Symbiotik</div>
               </div>
               <p className="text-gray-400 text-sm leading-relaxed">
                 Engineering smart connected solutions for a better tomorrow.
@@ -1196,7 +1094,8 @@ function App() {
               <div className="flex space-x-3 mb-4">
                 {[
                   { icon: Linkedin, label: 'LinkedIn' },
-                  { icon: Github, label: 'GitHub' }
+                  { icon: TikTokIcon, label: 'TikTok' },
+                  { icon: InstagramIcon, label: 'Instagram' }
                 ].map((social, index) => (
                   <motion.button
                     key={index}
