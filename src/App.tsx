@@ -580,12 +580,8 @@ function App() {
                   <img 
                     src={deliveryModel} 
                     alt="Delivery Model" 
-                    className="w-full h-full object-cover object-center"
+                    className="w-full h-full object-cover"
                   />
-                  <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
-                    <div className="text-sm text-white mb-2 font-medium">Delivery model</div>
-                    <div className="text-lg font-semibold text-white">From concept to production</div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -594,7 +590,7 @@ function App() {
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-12 max-w-6xl"
+              className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-20 max-w-6xl"
             >
               {[
                 { value: 500, suffix: '+', label: 'Projects Delivered', icon: Zap },
@@ -615,7 +611,7 @@ function App() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="section-padding relative bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900">
+      <section id="about" className="section-padding relative bg-white">
         <div className="container-max">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -630,14 +626,14 @@ function App() {
                 transition={{ delay: 0.2 }}
               >
                 <Lightbulb className="w-4 h-4 text-blue-300" />
-                <span className="text-slate-300">About Symbiotik Innovations</span>
+                <span className="text-slate-700">About Symbiotik Innovations</span>
               </motion.div>
               
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
                 About <span className="gradient-text">Symbiotik Innovations</span>
               </h2>
               
-              <p className="text-lg text-gray-300 leading-relaxed mb-8">
+              <p className="text-lg text-slate-600 leading-relaxed mb-8">
                 We develop reliable hardware, automation systems, and connected IoT solutions that improve efficiency, scalability, and sustainability. Our focus is on creating smart solutions that integrate embedded systems, cloud analytics, and industrial automation.
               </p>
               
@@ -658,7 +654,7 @@ function App() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5">
                       <item.icon className="h-5 w-5 text-blue-300" />
                     </div>
-                    <span className="text-slate-300">{item.text}</span>
+                    <span className="text-slate-700">{item.text}</span>
                   </motion.div>
                 ))}
               </div>
@@ -680,8 +676,8 @@ function App() {
               <div className="card-premium rounded-3xl p-10">
                 <div className="flex items-center justify-between gap-6 mb-8">
                   <div>
-                    <div className="text-sm text-slate-400">Core Capabilities</div>
-                    <div className="text-2xl font-semibold text-white mt-1">Hardware + Software, engineered together</div>
+                    <div className="text-sm text-slate-600">Core Capabilities</div>
+                    <div className="text-2xl font-semibold text-slate-800 mt-1">Hardware + Software, engineered together</div>
                   </div>
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
                     <Cpu className="h-6 w-6 text-blue-300" />
@@ -697,7 +693,7 @@ function App() {
                   ].map((t) => (
                     <div key={t} className="flex items-start gap-3">
                       <div className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                      <div className="text-slate-300 leading-relaxed">{t}</div>
+                      <div className="text-slate-700 leading-relaxed">{t}</div>
                     </div>
                   ))}
                 </div>
@@ -708,7 +704,7 @@ function App() {
       </section>
 
       {/* Why Us Section */}
-      <section id="why-us" className="section-padding bg-gradient-to-br from-slate-900 via-green-900/20 to-slate-900">
+      <section id="why-us" className="section-padding bg-white/10 backdrop-blur-sm">
         <div className="container-max">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1057,7 +1053,7 @@ function App() {
       <footer className="relative border-t border-gray-800/50">
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
         <div className="relative container-max py-12">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
+          <div className="grid md:grid-cols-4 gap-8 mb-8 mt-8">
             <div>
               <div className="flex items-center mb-4">
                 <div className="w-14 h-14 flex items-center justify-center overflow-hidden">
