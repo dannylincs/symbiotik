@@ -448,8 +448,8 @@ function App() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center"
             >
-              <div className="w-14 h-14 flex items-center justify-center">
-                <img src={logo} alt="Symbiotik Logo" className="w-full h-full object-contain filter drop-shadow-2xl brightness-110 contrast-125" />
+              <div className="w-14 h-14 flex items-center justify-center overflow-hidden">
+                <img src={logo} alt="Symbiotik Logo" className="w-full h-full object-contain scale-[2] filter drop-shadow-[0_0_18px_rgba(255,255,255,0.35)] brightness-125 contrast-150 saturate-150" />
               </div>
             </motion.div>
             
@@ -1060,8 +1060,8 @@ function App() {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center mb-4">
-                <div className="w-14 h-14 flex items-center justify-center">
-                  <img src={logo} alt="Symbiotik Logo" className="w-full h-full object-contain filter drop-shadow-2xl brightness-110 contrast-125" />
+                <div className="w-14 h-14 flex items-center justify-center overflow-hidden">
+                  <img src={logo} alt="Symbiotik Logo" className="w-full h-full object-contain scale-[2] filter drop-shadow-[0_0_18px_rgba(255,255,255,0.35)] brightness-125 contrast-150 saturate-150" />
                 </div>
               </div>
               <p className="text-gray-400 text-sm leading-relaxed">
