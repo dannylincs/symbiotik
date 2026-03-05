@@ -4,7 +4,7 @@ import {
   Menu, X, Cpu, Zap, Shield, Lightbulb, 
   Microchip, Wifi, Factory, Battery, 
   Code, Cloud, Mail, Phone, MapPin,
-  Linkedin, Github, ArrowRight, Activity,
+  Linkedin, ArrowRight, Activity,
   Globe, BarChart, Users, Award, ChevronRight, ChevronLeft
 } from 'lucide-react'
 
